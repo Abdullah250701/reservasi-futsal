@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Konfirmasi Hapus Reservasi</title>
+</head>
+<body>
+    <h1>Hapus Reservasi</h1>
+    <p>Apakah Anda yakin ingin menghapus reservasi untuk <strong>{{ object.pelanggan.nama }}</strong> di lapangan <strong>{{ object.lapangan.nama_lapangan }}</strong> pada tanggal <strong>{{ object.tanggal }}</strong>?</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Ya, Hapus</button>
+        <a href="{% url 'reservasi-list' %}">Batal</a>
+    </form>
+</body>
+</html>

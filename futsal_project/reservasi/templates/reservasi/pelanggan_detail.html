@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detail Pelanggan</title>
+</head>
+<body>
+    <h1>Detail Pelanggan</h1>
+    <p><strong>Nama:</strong> {{ object.nama }}</p>
+    <p><strong>No HP:</strong> {{ object.no_hp }}</p>
+
+    <a href="{% url 'pelanggan-edit' object.pk %}">Edit</a> | 
+    <a href="{% url 'pelanggan-hapus' object.pk %}">Hapus</a>
+
+    <hr>
+    <h2>Reservasi oleh {{ object.nama }}</h2>
+    <ul>
+        {% for reservasi in object.reservasi_set.all %}
+            <li>
+                <strong>{{ reservasi.lapangan.nama_lapangan }}</strong> 
+                ({{ reservasi.jam_mulai }} - {{ reservasi.jam_selesai }} pada {{ reservasi.tanggal }}) 
+                - Total: Rp{{ reservasi.total_harga }}
+                [<a href="{% url 'reservasi-edit' reservasi.pk %}">Edit</a> | 
+                 <a href="{% url 'reservasi-hapus' reservasi.pk %}">Hapus</a>]
+            </li>
+        {% empty %}
+            <li>Tidak ada reservasi.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'pelanggan-list' %}">Kembali ke Daftar Pelanggan</a>
+</body>
+</html>

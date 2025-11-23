@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daftar Pelanggan</title>
+</head>
+<body>
+    <h1>Daftar Pelanggan</h1>
+    <a href="{% url 'pelanggan-tambah' %}">Tambah Pelanggan Baru</a>
+    <ul>
+        {% for pelanggan in object_list %}
+            <li>
+                <a href="{% url 'pelanggan-detail' pelanggan.pk %}">{{ pelanggan.nama }}</a>
+            </li>
+        {% empty %}
+            <li>Belum ada pelanggan.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

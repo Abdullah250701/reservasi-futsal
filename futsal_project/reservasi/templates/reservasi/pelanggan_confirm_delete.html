@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Konfirmasi Hapus Pelanggan</title>
+</head>
+<body>
+    <h1>Hapus Pelanggan</h1>
+    <p>Apakah Anda yakin ingin menghapus data pelanggan: <strong>{{ object.nama }}</strong>?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Ya, Hapus</button>
+        <a href="{% url 'pelanggan-detail' object.pk %}">Batal</a>
+    </form>
+</body>
+</html>

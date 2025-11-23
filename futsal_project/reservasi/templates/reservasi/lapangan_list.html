@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daftar Lapangan</title>
+</head>
+<body>
+    <h1>Daftar Lapangan</h1>
+    <a href="{% url 'lapangan-tambah' %}">Tambah Lapangan Baru</a>
+    <ul>
+        {% for lapangan in object_list %}
+            <li>
+                <a href="{% url 'lapangan-detail' lapangan.pk %}">{{ lapangan.nama_lapangan }}</a>
+                - Harga per jam: Rp{{ lapangan.harga_per_jam }}
+                [<a href="{% url 'lapangan-edit' lapangan.pk %}">Edit</a> | 
+                 <a href="{% url 'lapangan-hapus' lapangan.pk %}">Hapus</a>]
+            </li>
+        {% empty %}
+            <li>Belum ada lapangan.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
