@@ -17,21 +17,39 @@ from .forms import PelangganForm
 from rest_framework import viewsets
 from .serializers import PelangganSerializer, ReservasiSerializer, LapanganSerializer
 from .models import Pelanggan, Reservasi, Lapangan
+from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
+from rest_framework.filters import SearchFilter, OrderingFilter # Impor ini
 
 # API Pelanggan
 class PelangganViewSet(viewsets.ModelViewSet):
     queryset = Pelanggan.objects.all().order_by('-id')
     serializer_class = PelangganSerializer
+    permissions_classes = [IsAuthenticatedOrReadOnly]
+
+    # --- Tambahkan ---
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['nama', 'no_hp']
+    ordering_fields = ['nama', 'no_hp']
 
 # API Reservasi
 class ReservasiViewSet(viewsets.ModelViewSet):
     queryset = Reservasi.objects.all().order_by('-tanggal')
     serializer_class = ReservasiSerializer
 
+    # --- Tambahkan ---
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['pelanggan', 'lapangan']
+    ordering_fields = ['pelanggan', 'lapangan']
+
 # API Lapangan
 class LapanganViewSet(viewsets.ModelViewSet):
     queryset = Lapangan.objects.all().order_by('nama_lapangan')
     serializer_class = LapanganSerializer
+
+    # --- Tambahkan ---
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['nama_lapangan']
+    ordering_fields = ['nama_lapangan', 'harga_per_jam']
 
 
 # ----------------------------
