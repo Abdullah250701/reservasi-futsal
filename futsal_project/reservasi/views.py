@@ -24,7 +24,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter # Impor ini
 class PelangganViewSet(viewsets.ModelViewSet):
     queryset = Pelanggan.objects.all().order_by('-id')
     serializer_class = PelangganSerializer
-    permissions_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [AllowAny]
 
     # --- Tambahkan ---
     filter_backends = [SearchFilter, OrderingFilter]
@@ -35,6 +35,7 @@ class PelangganViewSet(viewsets.ModelViewSet):
 class ReservasiViewSet(viewsets.ModelViewSet):
     queryset = Reservasi.objects.all().order_by('-tanggal')
     serializer_class = ReservasiSerializer
+    permission_classes = [AllowAny]
 
     # --- Tambahkan ---
     filter_backends = [SearchFilter, OrderingFilter]
@@ -45,6 +46,7 @@ class ReservasiViewSet(viewsets.ModelViewSet):
 class LapanganViewSet(viewsets.ModelViewSet):
     queryset = Lapangan.objects.all().order_by('nama_lapangan')
     serializer_class = LapanganSerializer
+    permission_classes = [AllowAny]
 
     # --- Tambahkan ---
     filter_backends = [SearchFilter, OrderingFilter]
