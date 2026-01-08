@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken', # Tambahkan ini
     'django_filters',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -141,9 +142,21 @@ REST_FRAMEWORK = {
         'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
         'PAGE_SIZE': 10, # Jumlah item per halaman
 
+
+        'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+
+
 CORS_ALLOW_ALL_ORIGINS = True
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API Sistem Reservasi Futsal',
+    'DESCRIPTION': 'Dokumentasi API untuk mengelola reservasi, pelanggan, lapangan, dan autentikasi.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+
 
 
 

@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include  # Tambahkan include
 from rest_framework.authtoken.views import obtain_auth_token
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 
 urlpatterns = [
@@ -25,5 +26,10 @@ urlpatterns = [
     path('api/', include('reservasi.api_urls')),   # URL untuk API
     path('api/auth/token/', obtain_auth_token, name='api-token-auth'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+
+    # 📄 DOKUMENTASI API
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema')),
+    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema')),
 ]
 
