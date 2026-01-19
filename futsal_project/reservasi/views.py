@@ -1,100 +1,96 @@
 # reservasi/views.py
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+
+from django.views.generic import (
+    ListView, DetailView, CreateView, UpdateView, DeleteView
+)
 from django.urls import reverse_lazy
 from django import forms
+
+from rest_framework import viewsets
+from rest_framework.filters import SearchFilter, OrderingFilter
+
 from .models import Pelanggan, Reservasi, Lapangan
+from .serializers import (
+    PelangganSerializer,
+    ReservasiSerializer,
+    LapanganSerializer
+)
+from .permissions import IsStaffOrReadOnly
 from .forms import PelangganForm
 
-# ----------------------------
-# API VIEWS DRF
-# ----------------------------
-# from rest_framework.generics import ListAPIView, RetrieveAPIView
-# from .serializers import PelangganSerializer, ReservasiSerializer, LapanganSerializer
 
-# ----------------------------
-# API VIEWS DRF - ModelViewSet
-# ----------------------------
-from rest_framework import viewsets
-from .serializers import PelangganSerializer, ReservasiSerializer, LapanganSerializer
-from .models import Pelanggan, Reservasi, Lapangan
-from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
-from rest_framework.filters import SearchFilter, OrderingFilter # Impor ini
+# =====================================================
+# API VIEWS (DRF) - FINAL UAS
+# =====================================================
 
-# API Pelanggan
+# -----------------------------
+# API PELANGGAN
+# -----------------------------
 class PelangganViewSet(viewsets.ModelViewSet):
+    """
+    - GET: Publik
+    - POST/PUT/DELETE: Hanya Staff
+    """
     queryset = Pelanggan.objects.all().order_by('-id')
     serializer_class = PelangganSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsStaffOrReadOnly]
 
-    # --- Tambahkan ---
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['nama', 'no_hp']
     ordering_fields = ['nama', 'no_hp']
 
-# API Reservasi
+
+# -----------------------------
+# API RESERVASI
+# -----------------------------
 class ReservasiViewSet(viewsets.ModelViewSet):
+    """
+    - GET: Publik
+    - POST/PUT/DELETE: Hanya Staff
+    """
     queryset = Reservasi.objects.all().order_by('-tanggal')
     serializer_class = ReservasiSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsStaffOrReadOnly]
 
-    # --- Tambahkan ---
     filter_backends = [SearchFilter, OrderingFilter]
-    search_fields = ['pelanggan', 'lapangan']
-    ordering_fields = ['pelanggan', 'lapangan']
+    search_fields = [
+        'pelanggan__nama',
+        'lapangan__nama_lapangan'
+    ]
+    ordering_fields = ['tanggal']
 
-# API Lapangan
+
+# -----------------------------
+# API LAPANGAN
+# -----------------------------
 class LapanganViewSet(viewsets.ModelViewSet):
+    """
+    - GET: Publik
+    - POST/PUT/DELETE: Hanya Staff
+    """
     queryset = Lapangan.objects.all().order_by('nama_lapangan')
     serializer_class = LapanganSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsStaffOrReadOnly]
 
-    # --- Tambahkan ---
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['nama_lapangan']
     ordering_fields = ['nama_lapangan', 'harga_per_jam']
 
 
-# ----------------------------
-# API PELANGGAN
-# ----------------------------
-# class PelangganListAPIView(ListAPIView):
-#     queryset = Pelanggan.objects.all()
-#     serializer_class = PelangganSerializer
+# =====================================================
+# WEB VIEWS (CBV)
+# =====================================================
 
-# class PelangganDetailAPIView(RetrieveAPIView):
-#     queryset = Pelanggan.objects.all()
-#     serializer_class = PelangganSerializer
-
-# ----------------------------
-# API RESERVASI
-# ----------------------------
-# class ReservasiListAPIView(ListAPIView):
-#     queryset = Reservasi.objects.all()
-#     serializer_class = ReservasiSerializer
-
-# class ReservasiDetailAPIView(RetrieveAPIView):
-#     queryset = Reservasi.objects.all()
-#     serializer_class = ReservasiSerializer
-
-# ----------------------------
-# API LAPANGAN
-# ----------------------------
-# class LapanganListAPIView(ListAPIView):
-#     queryset = Lapangan.objects.all()
-#     serializer_class = LapanganSerializer
-
-# class LapanganDetailAPIView(RetrieveAPIView):
-#     queryset = Lapangan.objects.all()
-#     serializer_class = LapanganSerializer
-
-# ----------------------------
-# PELANGGAN (WEB VIEWS)
-# ----------------------------
+# -----------------------------
+# PELANGGAN
+# -----------------------------
 class PelangganListView(ListView):
     model = Pelanggan
 
+
 class PelangganDetailView(DetailView):
     model = Pelanggan
+
 
 class PelangganCreateView(CreateView):
     model = Pelanggan
@@ -102,27 +98,39 @@ class PelangganCreateView(CreateView):
     template_name = 'reservasi/pelanggan_form.html'
     success_url = reverse_lazy('pelanggan-list')
 
+
 class PelangganUpdateView(UpdateView):
     model = Pelanggan
     form_class = PelangganForm
     template_name = 'reservasi/pelanggan_form.html'
     success_url = reverse_lazy('pelanggan-list')
 
+
 class PelangganDeleteView(DeleteView):
     model = Pelanggan
     template_name = 'reservasi/pelanggan_confirm_delete.html'
     success_url = reverse_lazy('pelanggan-list')
 
-# ----------------------------
-# RESERVASI (WEB VIEWS)
-# ----------------------------
+
+# -----------------------------
+# RESERVASI
+# -----------------------------
 class ReservasiForm(forms.ModelForm):
     class Meta:
         model = Reservasi
-        fields = ['pelanggan', 'lapangan', 'tanggal', 'jam_mulai', 'jam_selesai', 'total_harga']
+        fields = [
+            'pelanggan',
+            'lapangan',
+            'tanggal',
+            'jam_mulai',
+            'jam_selesai',
+            'total_harga'
+        ]
+
 
 class ReservasiListView(ListView):
     model = Reservasi
+
 
 class ReservasiCreateView(CreateView):
     model = Reservasi
@@ -130,25 +138,30 @@ class ReservasiCreateView(CreateView):
     template_name = 'reservasi/reservasi_form.html'
     success_url = reverse_lazy('reservasi-list')
 
+
 class ReservasiUpdateView(UpdateView):
     model = Reservasi
     form_class = ReservasiForm
     template_name = 'reservasi/reservasi_form.html'
     success_url = reverse_lazy('reservasi-list')
 
+
 class ReservasiDeleteView(DeleteView):
     model = Reservasi
     template_name = 'reservasi/reservasi_confirm_delete.html'
     success_url = reverse_lazy('reservasi-list')
 
-# ----------------------------
-# LAPANGAN (WEB VIEWS)
-# ----------------------------
+
+# -----------------------------
+# LAPANGAN
+# -----------------------------
 class LapanganListView(ListView):
     model = Lapangan
 
+
 class LapanganDetailView(DetailView):
     model = Lapangan
+
 
 class LapanganCreateView(CreateView):
     model = Lapangan
@@ -156,11 +169,13 @@ class LapanganCreateView(CreateView):
     template_name = 'reservasi/lapangan_form.html'
     success_url = reverse_lazy('lapangan-list')
 
+
 class LapanganUpdateView(UpdateView):
     model = Lapangan
     fields = ['nama_lapangan', 'harga_per_jam']
     template_name = 'reservasi/lapangan_form.html'
     success_url = reverse_lazy('lapangan-list')
+
 
 class LapanganDeleteView(DeleteView):
     model = Lapangan
