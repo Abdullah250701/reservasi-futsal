@@ -22,14 +22,14 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('pelanggan/', include('reservasi.urls')),  # URL /pelanggan/ mengarah ke aplikasi reservasi
-    path('api/', include('reservasi.api_urls')),   # URL untuk API
+    path('', include('reservasi.urls')),  # <-- web tanpa prefix
+    path('api/', include('reservasi.api_urls')),
     path('api/auth/token/', obtain_auth_token, name='api-token-auth'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
-    # 📄 DOKUMENTASI API
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema')),
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema')),
 ]
+
 

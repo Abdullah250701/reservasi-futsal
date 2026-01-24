@@ -1,10 +1,7 @@
-# reservasi/views.py
-
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView
 )
 from django.urls import reverse_lazy
-from django import forms
 
 from rest_framework import viewsets
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -16,7 +13,7 @@ from .serializers import (
     LapanganSerializer
 )
 from .permissions import IsStaffOrReadOnly
-from .forms import PelangganForm
+from .forms import PelangganForm, ReservasiForm
 
 
 # =====================================================
@@ -27,14 +24,9 @@ from .forms import PelangganForm
 # API PELANGGAN
 # -----------------------------
 class PelangganViewSet(viewsets.ModelViewSet):
-    """
-    - GET: Publik
-    - POST/PUT/DELETE: Hanya Staff
-    """
     queryset = Pelanggan.objects.all().order_by('-id')
     serializer_class = PelangganSerializer
     permission_classes = [IsStaffOrReadOnly]
-
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['nama', 'no_hp']
     ordering_fields = ['nama', 'no_hp']
@@ -44,14 +36,9 @@ class PelangganViewSet(viewsets.ModelViewSet):
 # API RESERVASI
 # -----------------------------
 class ReservasiViewSet(viewsets.ModelViewSet):
-    """
-    - GET: Publik
-    - POST/PUT/DELETE: Hanya Staff
-    """
     queryset = Reservasi.objects.all().order_by('-tanggal')
     serializer_class = ReservasiSerializer
     permission_classes = [IsStaffOrReadOnly]
-
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = [
         'pelanggan__nama',
@@ -64,14 +51,9 @@ class ReservasiViewSet(viewsets.ModelViewSet):
 # API LAPANGAN
 # -----------------------------
 class LapanganViewSet(viewsets.ModelViewSet):
-    """
-    - GET: Publik
-    - POST/PUT/DELETE: Hanya Staff
-    """
     queryset = Lapangan.objects.all().order_by('nama_lapangan')
     serializer_class = LapanganSerializer
     permission_classes = [IsStaffOrReadOnly]
-
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['nama_lapangan']
     ordering_fields = ['nama_lapangan', 'harga_per_jam']
@@ -115,19 +97,6 @@ class PelangganDeleteView(DeleteView):
 # -----------------------------
 # RESERVASI
 # -----------------------------
-class ReservasiForm(forms.ModelForm):
-    class Meta:
-        model = Reservasi
-        fields = [
-            'pelanggan',
-            'lapangan',
-            'tanggal',
-            'jam_mulai',
-            'jam_selesai',
-            'total_harga'
-        ]
-
-
 class ReservasiListView(ListView):
     model = Reservasi
 

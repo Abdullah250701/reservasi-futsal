@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from decimal import Decimal
+from datetime import datetime
 
 class Pelanggan(models.Model):
     nama = models.CharField(max_length=100)
@@ -36,15 +37,17 @@ class Reservasi(models.Model):
         # Jalankan validasi
         self.full_clean()
 
+        # Gabungkan tanggal + jam
+        start = datetime.combine(self.tanggal, self.jam_mulai)
+        end = datetime.combine(self.tanggal, self.jam_selesai)
+
         # Hitung durasi dalam jam
-        jam_mulai = self.jam_mulai.hour + self.jam_mulai.minute / 60
-        jam_selesai = self.jam_selesai.hour + self.jam_selesai.minute / 60
-        durasi = jam_selesai - jam_mulai
+        durasi = (end - start).total_seconds() / 3600
 
         if durasi <= 0:
             raise ValidationError("Durasi harus lebih dari 0 jam")
 
-        # Konversi durasi ke Decimal sebelum dikali
+        # Konversi ke Decimal sebelum dikali
         durasi_decimal = Decimal(str(durasi))
 
         # Hitung total_harga otomatis
